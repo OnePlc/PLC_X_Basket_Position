@@ -32,6 +32,8 @@ class PositionController extends CoreEntityController {
      */
     protected $oTableGateway;
 
+    protected $aPluginTables;
+
     /**
      * PositionController constructor.
      *
@@ -39,11 +41,12 @@ class PositionController extends CoreEntityController {
      * @param PositionTable $oTableGateway
      * @since 1.0.0
      */
-    public function __construct(AdapterInterface $oDbAdapter, BasketTable $oTableGateway, $oServiceManager)
+    public function __construct(AdapterInterface $oDbAdapter, BasketTable $oTableGateway, $oServiceManager,$aPluginTables = [])
     {
         $this->oTableGateway = $oTableGateway;
         $this->sSingleForm = 'basketposition-single';
         parent::__construct($oDbAdapter, $oTableGateway, $oServiceManager);
+        $this->aPluginTables = $aPluginTables;
 
         if ($oTableGateway) {
             # Attach TableGateway to Entity Models
@@ -54,12 +57,44 @@ class PositionController extends CoreEntityController {
     }
 
     public function attachPosition($oBasket) {
+        $oPosTbl = $this->aPluginTables['position'];
+
+        $aPositions = [];
+        $fSubTotal = 0;
+        $oPositionsDB = $oPosTbl->fetchAll(false,['basket_idfs'=>$oBasket->getID()]);
+        if(count($oPositionsDB) > 0) {
+            foreach($oPositionsDB as $oPos) {
+                # Calculate Position Total if property exists
+                if(property_exists($oPos,'total')) {
+                    $oPos->total = $oPos->amount*$oPos->price;
+                    $fSubTotal+=$oPos->total;
+                }
+                $aPositions[] = $oPos;
+            }
+        }
+        $aFields = [];
+        $aUserFields = CoreEntityController::$oSession->oUser->getMyFormFields();
+        if(array_key_exists('basketposition-single',$aUserFields)) {
+            $aFieldsTmp = $aUserFields['basketposition-single'];
+            if(count($aFieldsTmp) > 0) {
+                # add all contact-base fields
+                foreach($aFieldsTmp as $oField) {
+                    if($oField->tab == 'position-base') {
+                        $aFields[] = $oField;
+                    }
+                }
+            }
+        }
+        $aFieldsByTab = ['position-base'=>$aFields];
         # Pass Data to View - which will pass it to our partial
         return [
             # must be named aPartialExtraData
             'aPartialExtraData' => [
                 # must be name of your partial
                 'basket_position'=> [
+                    'aPositions'=>$aPositions,
+                    'aFieldsByTab'=>$aFieldsByTab,
+                    'fSubTotal'=>$fSubTotal,
                 ]
             ]
         ];

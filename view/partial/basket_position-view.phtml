@@ -2,6 +2,46 @@
 # Only show partial if data is set
 if(array_key_exists('basket_position',$this->aPartialData)) {
     # add address form fields
-    //$oContact = $this->aPartialData['basket_position']['oContact'];
-    //$aFields = $this->aPartialData['basket_position']['aFields'];
+    $aPositions = $this->aPartialData['basket_position']['aPositions'];
+    $aFields = $this->aPartialData['basket_position']['aFieldsByTab'];
+    $fSubTotal = $this->aPartialData['basket_position']['fSubTotal'];
+    if(count($aPositions) > 0) {
+        ?>
+        <ul class="list-group">
+            <li class="list-group-item">
+                <div class="row">
+                    <?= $this->partial('partial/viewformfields', ['bOnlyLabels'=>true,'sFormName' => 'basketposition-single', 'sTab' => 'position-base', 'aFormFieldsByTab' => $aFields]); ?>
+                </div>
+            </li>
+        <?php foreach($aPositions as $oPos) {
+            ?>
+            <li class="list-group-item">
+                <div class="row">
+                    <?= $this->partial('partial/viewformfields', ['bHideLabels'=>true,'sFormName' => 'basketposition-single', 'sTab' => 'position-base', 'oItem' => $oPos, 'aFormFieldsByTab' => $aFields]); ?>
+                </div>
+            </li>
+        <?php } ?>
+        </ul>
+
+        <div class="row">
+            <div class="col-md-6">
+
+            </div>
+            <div class="col-md-6">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col-md-4">
+                                Sub-Total
+                            </div>
+                            <div class="col-md-8 text-right">
+                                € <?=number_format($fSubTotal,2,',','.')?>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    <?php
+    }
 }

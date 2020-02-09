@@ -50,10 +50,33 @@ class Module {
         $container    = $application->getServiceManager();
         $oDbAdapter = $container->get(AdapterInterface::class);
         $tableGateway = $container->get(BasketTable::class);
+        $aPluginTables = [];
+        $aPluginTables['position'] = $container->get(Model\PositionTable::class);
 
         # Register Filter Plugin Hook
-        CoreEntityController::addHook('basket-view-before',(object)['sFunction'=>'attachPosition','oItem'=>new PositionController($oDbAdapter,$tableGateway,$container)]);
+        CoreEntityController::addHook('basket-view-before',(object)['sFunction'=>'attachPosition','oItem'=>new PositionController($oDbAdapter,$tableGateway,$container,$aPluginTables)]);
         //CoreEntityController::addHook('contacthistory-add-before-save',(object)['sFunction'=>'attachPositionToBasket','oItem'=>new PositionController($oDbAdapter,$tableGateway,$container)]);
+    }
+
+    /**
+     * Load Models
+     */
+    public function getServiceConfig() : array {
+        return [
+            'factories' => [
+                # Position Plugin - Base Model
+                Model\PositionTable::class => function($container) {
+                    $tableGateway = $container->get(Model\PositionTableGateway::class);
+                    return new Model\PositionTable($tableGateway,$container);
+                },
+                Model\PositionTableGateway::class => function ($container) {
+                    $dbAdapter = $container->get(AdapterInterface::class);
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Model\Position($dbAdapter));
+                    return new TableGateway('basket_position', $dbAdapter, null, $resultSetPrototype);
+                },
+            ],
+        ];
     }
 
     /**
