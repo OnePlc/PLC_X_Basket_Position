@@ -31,7 +31,7 @@ class Module {
      *
      * @since 1.0.0
      */
-    const VERSION = '1.0.0';
+    const VERSION = '1.0.1';
 
     /**
      * Load module config file
@@ -49,6 +49,7 @@ class Module {
         $application = $e->getApplication();
         $container    = $application->getServiceManager();
         $oDbAdapter = $container->get(AdapterInterface::class);
+        // TODO: Remove this, not autoupdate compatible
         $tableGateway = $container->get(BasketTable::class);
         $aPluginTables = [];
         $aPluginTables['position'] = $container->get(Model\PositionTable::class);
@@ -77,7 +78,7 @@ class Module {
                 },
             ],
         ];
-    }
+    } # getServiceConfig()
 
     /**
      * Load Controllers
@@ -85,7 +86,6 @@ class Module {
     public function getControllerConfig() : array {
         return [
             'factories' => [
-                # Plugin Example Controller
                 Controller\PositionController::class => function($container) {
                     $oDbAdapter = $container->get(AdapterInterface::class);
                     $tableGateway = $container->get(BasketTable::class);
@@ -98,7 +98,16 @@ class Module {
                         $container
                     );
                 },
+                # Installer
+                Controller\InstallController::class => function($container) {
+                    $oDbAdapter = $container->get(AdapterInterface::class);
+                    return new Controller\InstallController(
+                        $oDbAdapter,
+                        $container->get(Model\PositionTable::class),
+                        $container
+                    );
+                },
             ],
         ];
-    }
+    } # getControllerConfig()
 }
