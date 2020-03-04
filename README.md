@@ -4,7 +4,7 @@ Positions for onePlace Baskets.
 
 This Plugin is to extend onePlace Baskets with positions. 
 
-Positions can be customized as they are skeleton based. So you can
+Positions can be customized as they are position based. So you can
 use dynamic fields.
 
 This plugin is part of the onePlace Onlineshop Package.

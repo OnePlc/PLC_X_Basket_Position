@@ -2,7 +2,7 @@
 /**
  * PositionTable.php - Position Table
  *
- * Table Model for Basket Position
+ * Table Model for Position Position
  *
  * @category Model
  * @package Basket\Position
@@ -40,75 +40,37 @@ class PositionTable extends CoreEntityTable {
     }
 
     /**
-     * Get Basket Entity
+     * Get Position Entity
      *
      * @param int $id
+     * @param string $sKey
      * @return mixed
      * @since 1.0.0
      */
-    public function getSingle($id) {
+    public function getSingle($id,$sKey = 'Position_ID') {
         # Use core function
-        return $this->getSingleEntity($id,'Position_ID');
+        return $this->getSingleEntity($id,$sKey);
     }
 
     /**
-     * Save Basket Entity
+     * Save Position Entity
      *
-     * @param Basket $oBasket
-     * @return int Basket ID
+     * @param Position $oPosition
+     * @return int Position ID
      * @since 1.0.0
      */
-    public function saveSingle(Position $oBasket) {
-        $aData = [];
+    public function saveSingle(Position $oPosition) {
+        $aDefaultData = [
+            'label' => $oPosition->label,
+        ];
 
-        $aData = $this->attachDynamicFields($aData,$oBasket);
-
-        $id = (int) $oBasket->id;
-
-        if ($id === 0) {
-            # Add Metadata
-            if(isset($oSession->oUser)) {
-                $aData['created_by'] = CoreController::$oSession->oUser->getID();
-                $aData['created_date'] = date('Y-m-d H:i:s', time());
-                $aData['modified_by'] = CoreController::$oSession->oUser->getID();
-                $aData['modified_date'] = date('Y-m-d H:i:s', time());
-            } else {
-                $aData['created_by'] = 1;
-                $aData['created_date'] = date('Y-m-d H:i:s', time());
-                $aData['modified_by'] = 1;
-                $aData['modified_date'] = date('Y-m-d H:i:s', time());
-            }
-            # Insert Basket
-            $this->oTableGateway->insert($aData);
-
-            # Return ID
-            return $this->oTableGateway->lastInsertValue;
-        }
-
-        # Check if Basket Entity already exists
-        try {
-            $this->getSingle($id);
-        } catch (\RuntimeException $e) {
-            throw new \RuntimeException(sprintf(
-                'Cannot update Position with identifier %d; does not exist',
-                $id
-            ));
-        }
-
-        # Update Metadata
-        $aData['modified_by'] = (isset(CoreController::$oSession->oUser)) ? CoreController::$oSession->oUser->getID() : 1;
-        $aData['modified_date'] = date('Y-m-d H:i:s',time());
-
-        # Update Basket
-        $this->oTableGateway->update($aData, ['Position_ID' => $id]);
-
-        return $id;
+        return $this->saveSingleEntity($oPosition,'Position_ID',$aDefaultData);
     }
 
     /**
      * Generate new single Entity
      *
-     * @return Basket
+     * @return Position
      * @since 1.0.0
      */
     public function generateNew() {

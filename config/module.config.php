@@ -20,6 +20,22 @@ use Laminas\Router\Http\Segment;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 
 return [
+    # Position Module - Routes
+    'router' => [
+        'routes' => [
+            'basket-position-setup' => [
+                'type'    => Literal::class,
+                'options' => [
+                    'route'    => '/basket/position/setup',
+                    'defaults' => [
+                        'controller' => Controller\InstallController::class,
+                        'action'     => 'checkdb',
+                    ],
+                ],
+            ],
+        ],
+    ], # Routes
+
     # View Settings
     'view_manager' => [
         'template_path_stack' => [

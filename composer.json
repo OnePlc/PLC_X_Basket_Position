@@ -2,23 +2,27 @@
   "name": "oneplace/oneplace-basket-position",
   "description": "onePlace Basket Position Plugin. Items in Baskets",
   "type": "oneplace-plugin",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "BSD-3-Clause",
   "keywords": [
     "laminas",
     "mvc",
     "oneplace-module",
     "oneplace",
-    "skeleton",
+    "position",
     "framework"
   ],
   "require-dev": {
     "phpunit/phpunit": "^8",
     "laminas/laminas-test": "^3.3.0",
+    "oneplace/oneplace-article": "^1.0.5",
+    "oneplace/oneplace-basket": "^1.0.1",
     "php-coveralls/php-coveralls": "^2.2"
   },
   "require": {
-    "php": "^7.1"
+    "php": "^7.1",
+    "oneplace/oneplace-basket": "^1.0.1",
+    "oneplace/oneplace-article": "^1.0.5"
   },
   "autoload": {
     "psr-4": {

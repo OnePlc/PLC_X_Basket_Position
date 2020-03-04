@@ -2,7 +2,7 @@
 /**
  * Position.php - Position Entity
  *
- * Entity Model for Basket Position
+ * Entity Model for Position Position
  *
  * @category Model
  * @package Basket\Position
@@ -18,10 +18,8 @@ namespace OnePlace\Basket\Position\Model;
 use Application\Model\CoreEntityModel;
 
 class Position extends CoreEntityModel {
-    public $basket_idfs;
-
     /**
-     * Basket constructor.
+     * Position constructor.
      *
      * @param AdapterInterface $oDbAdapter
      * @since 1.0.0
@@ -44,12 +42,9 @@ class Position extends CoreEntityModel {
      */
     public function exchangeArray(array $aData) {
         $this->id = !empty($aData['Position_ID']) ? $aData['Position_ID'] : 0;
-        $this->basket_idfs = !empty($aData['basket_idfs']) ? $aData['basket_idfs'] : 0;
+        $this->label = !empty($aData['label']) ? $aData['label'] : '';
 
         $this->updateDynamicFields($aData);
     }
 
-    public function getLabel() {
-        return $this->article_idfs;
-    }
 }
