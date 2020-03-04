@@ -67,11 +67,17 @@ class PositionTable extends CoreEntityTable {
 
         if ($id === 0) {
             # Add Metadata
-            $aData['created_by'] = CoreController::$oSession->oUser->getID();
-            $aData['created_date'] = date('Y-m-d H:i:s',time());
-            $aData['modified_by'] = CoreController::$oSession->oUser->getID();
-            $aData['modified_date'] = date('Y-m-d H:i:s',time());
-
+            if(isset($oSession->oUser)) {
+                $aData['created_by'] = CoreController::$oSession->oUser->getID();
+                $aData['created_date'] = date('Y-m-d H:i:s', time());
+                $aData['modified_by'] = CoreController::$oSession->oUser->getID();
+                $aData['modified_date'] = date('Y-m-d H:i:s', time());
+            } else {
+                $aData['created_by'] = 1;
+                $aData['created_date'] = date('Y-m-d H:i:s', time());
+                $aData['modified_by'] = 1;
+                $aData['modified_date'] = date('Y-m-d H:i:s', time());
+            }
             # Insert Basket
             $this->oTableGateway->insert($aData);
 
@@ -90,7 +96,7 @@ class PositionTable extends CoreEntityTable {
         }
 
         # Update Metadata
-        $aData['modified_by'] = CoreController::$oSession->oUser->getID();
+        $aData['modified_by'] = (isset(CoreController::$oSession->oUser)) ? CoreController::$oSession->oUser->getID() : 1;
         $aData['modified_date'] = date('Y-m-d H:i:s',time());
 
         # Update Basket
