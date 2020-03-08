@@ -18,6 +18,9 @@ namespace OnePlace\Basket\Position\Model;
 use Application\Model\CoreEntityModel;
 
 class Position extends CoreEntityModel {
+    public $basket_idfs;
+    public $article_type;
+
     /**
      * Position constructor.
      *
@@ -42,7 +45,7 @@ class Position extends CoreEntityModel {
      */
     public function exchangeArray(array $aData) {
         $this->id = !empty($aData['Position_ID']) ? $aData['Position_ID'] : 0;
-        $this->label = !empty($aData['label']) ? $aData['label'] : '';
+        $this->article_type = !empty($aData['article_type']) ? $aData['article_type'] : '';
 
         $this->updateDynamicFields($aData);
     }

@@ -17,6 +17,7 @@ CREATE TABLE `basket_position` (
   `Position_ID` int(11) NOT NULL,
   `basket_idfs` int(11) NOT NULL DEFAULT 0,
   `article_idfs` int(11) NOT NULL DEFAULT 0,
+  `article_type` VARCHAR(20) NOT NULL DEFAULT 'article',
   `amount` FLOAT NOT NULL DEFAULT 0,
   `price` FLOAT NOT NULL DEFAULT 0,
   `comment` text COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
@@ -53,4 +54,5 @@ INSERT INTO `core_form_field` (`Field_ID`, `type`, `label`, `fieldkey`, `tab`, `
 (NULL, 'currency', 'Price', 'price', 'position-base', 'basketposition-single', 'col-md-2', '', '', '0', '1', '0', '', '', ''),
 (NULL, 'text', 'Comment', 'comment', 'position-base', 'basketposition-single', 'col-md-4', '', '', '0', '1', '0', '', '', ''),
 (NULL, 'select', 'Article', 'article_idfs', 'position-base', 'basketposition-single', 'col-md-2', '', '/api/article/list', '0', '1', '0', 'article-single', 'OnePlace\\Article\\Model\\ArticleTable','add-OnePlace\\Article\\Controller\\ArticleController'),
+(NULL, 'text', 'Article Type', 'article_type', 'position-base', 'basketposition-single', 'col-md-2', '', '', '', '0', '1', '1', '', '', ''),
 (NULL, 'currency', 'Total', 'total', 'position-base', 'basketposition-single', 'col-md-3', '', '', '0', '1', '0', '', '', '');
