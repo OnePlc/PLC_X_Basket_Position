@@ -1,10 +1,13 @@
 <?php
 # Only show partial if data is set
+use Application\Controller\CoreController;
+
 if(array_key_exists('basket_position',$this->aPartialData)) {
     # add address form fields
     $aPositions = $this->aPartialData['basket_position']['aPositions'];
     $aFields = $this->aPartialData['basket_position']['aFieldsByTab'];
     $fSubTotal = $this->aPartialData['basket_position']['fSubTotal'];
+
     if(count($aPositions) > 0) {
         ?>
         <ul class="list-group">
@@ -17,7 +20,41 @@ if(array_key_exists('basket_position',$this->aPartialData)) {
             ?>
             <li class="list-group-item">
                 <div class="row">
-                    <?= $this->partial('partial/viewformfields', ['bHideLabels'=>true,'sFormName' => 'basketposition-single', 'sTab' => 'position-base', 'oItem' => $oPos, 'aFormFieldsByTab' => $aFields]); ?>
+                    <?php foreach(array_keys($aFields) as $sTab) {
+                        $aFieldsByTab = $aFields[$sTab];
+                        foreach($aFieldsByTab as $oField) {
+                            if(property_exists($oPos,$oField->fieldkey)) {
+                                $sFieldKey = $oField->fieldkey;
+                                ?>
+                                <div class="<?=$oField->class?>">
+                                    <?php
+                                    if(is_object($oPos->$sFieldKey)) {
+                                        if(method_exists($oPos->$sFieldKey,'getLabel')) {
+                                            echo $oPos->$sFieldKey->getLabel();
+                                        }
+                                    } else {
+                                        switch($oField->type) {
+                                            case 'currency':
+                                                if(CoreController::$aGlobalSettings['app-currency-sign-position'] == 'before') {
+                                                    echo CoreController::$aGlobalSettings['app-currency-sign'] . ' ';
+                                                }
+                                                echo number_format($oPos->$sFieldKey,2,CoreController::$aGlobalSettings['app-currency-decpoint'],CoreController::$aGlobalSettings['app-currency-thousandsep']);
+                                                if(CoreController::$aGlobalSettings['app-currency-sign-position'] == 'after') {
+                                                    echo ' ' . CoreController::$aGlobalSettings['app-currency-sign'];
+                                                }
+                                                break;
+                                            default:
+                                                echo $oPos->$sFieldKey;
+                                                break;
+                                        }
+
+                                    }
+                                    ?>
+                                </div>
+                                <?php
+                            }
+                         }
+                    } ?>
                 </div>
             </li>
         <?php } ?>
@@ -35,7 +72,15 @@ if(array_key_exists('basket_position',$this->aPartialData)) {
                                 Sub-Total
                             </div>
                             <div class="col-md-8 text-right">
-                                € <?=number_format($fSubTotal,2,',','.')?>
+                                <?php
+                                if(CoreController::$aGlobalSettings['app-currency-sign-position'] == 'before') {
+                                    echo CoreController::$aGlobalSettings['app-currency-sign'] . ' ';
+                                }
+                                echo number_format($fSubTotal,2,CoreController::$aGlobalSettings['app-currency-decpoint'],CoreController::$aGlobalSettings['app-currency-thousandsep']);
+                                if(CoreController::$aGlobalSettings['app-currency-sign-position'] == 'after') {
+                                    echo ' ' . CoreController::$aGlobalSettings['app-currency-sign'];
+                                }
+                                ?>
                             </div>
                         </div>
                     </li>
@@ -44,4 +89,9 @@ if(array_key_exists('basket_position',$this->aPartialData)) {
         </div>
     <?php
     }
+} else { ?>
+    <div class="alert alert-danger px-2 py-2">
+        <?= $this->translate('Could not load basket positions') ?>
+    </div>
+    <?php
 }

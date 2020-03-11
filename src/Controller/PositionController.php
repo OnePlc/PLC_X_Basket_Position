@@ -59,11 +59,34 @@ class PositionController extends CoreEntityController {
     public function attachPosition($oBasket) {
         $oPosTbl = $this->aPluginTables['position'];
 
+        try {
+            $oArtTbl = CoreEntityController::$oServiceManager->get(\OnePlace\Article\Model\ArticleTable::class);
+        } catch(\RuntimeException $e) {
+            // no variant plugin present
+        }
+
+        try {
+            $oVarTbl = CoreEntityController::$oServiceManager->get(\OnePlace\Article\Variant\Model\VariantTable::class);
+        } catch(\RuntimeException $e) {
+            // no variant plugin present
+        }
+
         $aPositions = [];
         $fSubTotal = 0;
         $oPositionsDB = $oPosTbl->fetchAll(false,['basket_idfs'=>$oBasket->getID()]);
         if(count($oPositionsDB) > 0) {
             foreach($oPositionsDB as $oPos) {
+                switch($oPos->article_type) {
+                    case 'variant':
+                        if(isset($oVarTbl)) {
+                            $oVar = $oVarTbl->getSingle($oPos->article_idfs);
+                            $oBaseArt = $oArtTbl->getSingle($oVar->article_idfs);
+                            $oPos->article_idfs = $oBaseArt->getLabel().': '.$oVar->getLabel();
+                        }
+                        break;
+                    default:
+                        break;
+                }
                 # Calculate Position Total if property exists
                 if(property_exists($oPos,'total')) {
                     $oPos->total = $oPos->amount*$oPos->price;
