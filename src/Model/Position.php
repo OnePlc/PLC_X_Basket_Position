@@ -20,6 +20,8 @@ use Application\Model\CoreEntityModel;
 class Position extends CoreEntityModel {
     public $basket_idfs;
     public $article_type;
+    public $ref_type;
+    public $ref_idfs;
 
     /**
      * Position constructor.
@@ -45,7 +47,9 @@ class Position extends CoreEntityModel {
      */
     public function exchangeArray(array $aData) {
         $this->id = !empty($aData['Position_ID']) ? $aData['Position_ID'] : 0;
-        $this->article_type = !empty($aData['article_type']) ? $aData['article_type'] : '';
+        $this->article_type = !empty($aData['article_type']) ? $aData['article_type'] : 'article';
+        $this->ref_type = !empty($aData['ref_type']) ? $aData['ref_type'] : 'none';
+        $this->ref_idfs = !empty($aData['ref_idfs']) ? $aData['ref_idfs'] : 0;
 
         $this->updateDynamicFields($aData);
     }

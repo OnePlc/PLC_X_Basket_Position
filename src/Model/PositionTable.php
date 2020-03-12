@@ -63,6 +63,8 @@ class PositionTable extends CoreEntityTable {
         $aDefaultData = [
             'basket_idfs' => $oPosition->basket_idfs,
             'article_type' => $oPosition->article_type,
+            'ref_type' => $oPosition->ref_type,
+            'ref_idfs' => $oPosition->ref_idfs,
         ];
         unset($oPosition->label);
         unset($oPosition->total);

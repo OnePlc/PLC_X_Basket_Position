@@ -18,6 +18,8 @@ CREATE TABLE `basket_position` (
   `basket_idfs` int(11) NOT NULL DEFAULT 0,
   `article_idfs` int(11) NOT NULL DEFAULT 0,
   `article_type` VARCHAR(20) NOT NULL DEFAULT 'article',
+  `ref_idfs` int(11) NOT NULL DEFAULT 0,
+  `ref_type` VARCHAR(20) NOT NULL DEFAULT 'none',
   `amount` FLOAT NOT NULL DEFAULT 0,
   `price` FLOAT NOT NULL DEFAULT 0,
   `comment` text COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
